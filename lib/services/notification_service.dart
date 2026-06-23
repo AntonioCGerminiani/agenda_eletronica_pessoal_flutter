@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:agenda_eletronica_pessoal/models/event.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -20,9 +22,13 @@ class NotificationService {
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
     // 3. Configurações globais de inicialização
+    const LinuxInitializationSettings initializationSettingsLinux =
+        LinuxInitializationSettings(defaultActionName: 'Abrir notificação');
+
     const InitializationSettings initializationSettings =
         InitializationSettings(
           android: initializationSettingsAndroid,
+          linux: initializationSettingsLinux,
         );
 
     await _notificationsPlugin.initialize(
@@ -33,10 +39,13 @@ class NotificationService {
     );
 
     // 4. Solicitar permissões no Android (Android 13+)
-    await _notificationsPlugin
+    final androidImplementation = _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestNotificationsPermission();
+          AndroidFlutterLocalNotificationsPlugin
+        >();
+
+    await androidImplementation?.requestNotificationsPermission();
+    await androidImplementation?.requestExactAlarmsPermission();
   }
 
   // Função para agendar um lembrete específico
@@ -51,22 +60,45 @@ class NotificationService {
     // Evita agendar notificações para o passado
     if (tzDate.isBefore(tz.TZDateTime.now(tz.local))) return;
 
-    await _notificationsPlugin.zonedSchedule(
-      id: id,
-      title: title,
-      body: body,
-      scheduledDate: tzDate,
-      notificationDetails: const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'agenda_channel_id',
-          'Lembretes da Agenda',
-          channelDescription: 'Canal de notificações para lembrete de eventos',
-          importance: Importance.max,
-          priority: Priority.high,
+    try {
+      await _notificationsPlugin.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+        scheduledDate: tzDate,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'agenda_channel_id',
+            'Lembretes da Agenda',
+            channelDescription:
+                'Canal de notificações para lembrete de eventos',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+          linux: LinuxNotificationDetails(),
         ),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-    );
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      );
+    } catch (e) {
+      if (e is UnimplementedError) {
+        // Fallback for platforms that do not support zonedSchedule (e.g. Linux)
+        // using an in-memory Timer. It only works while the app is open.
+        final duration = scheduledDate.difference(DateTime.now());
+        if (duration.isNegative) return;
+        Timer(duration, () {
+          _notificationsPlugin.show(
+            id: id,
+            title: title,
+            body: body,
+            notificationDetails: const NotificationDetails(
+              linux: LinuxNotificationDetails(),
+            ),
+          );
+        });
+      } else {
+        rethrow;
+      }
+    }
   }
 
   // Cancela todas as notificações de um evento específico
