@@ -21,15 +21,24 @@ class NotificationService {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // 3. Configurações globais de inicialização
+    // 3. Configurações para iOS
+    const DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
+    // 4. Configurações globais de inicialização
     const LinuxInitializationSettings initializationSettingsLinux =
         LinuxInitializationSettings(defaultActionName: 'Abrir notificação');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
-          android: initializationSettingsAndroid,
-          linux: initializationSettingsLinux,
-        );
+      android: initializationSettingsAndroid,
+      linux: initializationSettingsLinux,
+      iOS: initializationSettingsDarwin,
+    );
 
     await _notificationsPlugin.initialize(
       settings: initializationSettings,
@@ -46,6 +55,16 @@ class NotificationService {
 
     await androidImplementation?.requestNotificationsPermission();
     await androidImplementation?.requestExactAlarmsPermission();
+
+    // 6. Solicitar permissões no iOS
+    final iosImplementation = _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>();
+    await iosImplementation?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   // Função para agendar um lembrete específico
@@ -76,6 +95,7 @@ class NotificationService {
             priority: Priority.high,
           ),
           linux: LinuxNotificationDetails(),
+          iOS: DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
