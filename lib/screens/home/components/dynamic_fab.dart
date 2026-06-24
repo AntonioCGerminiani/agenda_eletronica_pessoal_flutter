@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:agenda_eletronica_pessoal/screens/contacts/contact_form_screen.dart';
 
 /// Widget que cria um FloatingActionButton dinâmico baseado na aba ativa
-Widget buildDynamicFAB(BuildContext context, TabController tabController) {
+Widget buildDynamicFAB(BuildContext context, int index) {
   IconData icon;
   String tooltip;
   Widget formScreen;
 
-  if (tabController.index == 0) {
+  if (index == 0) {
     icon = Icons.person_add;
     tooltip = 'Adicionar Contato';
     formScreen = const ContactFormScreen();
-  } else if (tabController.index == 1) {
+  } else if (index == 1) {
     icon = Icons.group_add;
     tooltip = 'Adicionar Grupo';
     formScreen = const GroupFormScreen();

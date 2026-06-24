@@ -2,13 +2,15 @@ import 'package:agenda_eletronica_pessoal/constants/enum/status.dart';
 import 'package:agenda_eletronica_pessoal/constants/enum/yes_no.dart';
 import 'package:flutter/material.dart';
 
+import 'package:agenda_eletronica_pessoal/services/router/router.dart' as app_router;
+
 // Sistema para notificação global via Toast dentro da aplicação.
 // Utilizado principalmente para notificar ações de sucesso ou erro nos Controllers.
 class ToastService {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey = app_router.Router.rootNavigatorKey;
 
   /// Pode receber tanto uma mensagem, uma keyword ou apenas um Status.
   ///

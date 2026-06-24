@@ -3,7 +3,7 @@ import 'package:agenda_eletronica_pessoal/constants/app_strings.dart';
 import 'package:agenda_eletronica_pessoal/controllers/contact_controller.dart';
 import 'package:agenda_eletronica_pessoal/controllers/event_controller.dart';
 import 'package:agenda_eletronica_pessoal/controllers/group_controller.dart';
-import 'package:agenda_eletronica_pessoal/screens/home/home_screen.dart';
+import 'package:agenda_eletronica_pessoal/services/router/router.dart' as app_router;
 import 'package:agenda_eletronica_pessoal/services/hive_service.dart';
 import 'package:agenda_eletronica_pessoal/services/notification_service.dart';
 import 'package:agenda_eletronica_pessoal/services/toast_service.dart';
@@ -46,8 +46,8 @@ Future<void> main() async {
           ),
         ),
       ],
-      child: MaterialApp(
-        navigatorKey: toastService.navigatorKey,
+      child: MaterialApp.router(
+        routerConfig: app_router.Router.appRouter,
         scaffoldMessengerKey: toastService.scaffoldMessengerKey,
         theme: ThemeData(
           useMaterial3: true,
@@ -65,7 +65,6 @@ Future<void> main() async {
           ),
           scaffoldBackgroundColor: AppColors.background,
         ),
-        home: const HomeScreen(),
       ),
     ),
   );
