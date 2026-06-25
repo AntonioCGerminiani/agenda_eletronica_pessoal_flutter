@@ -39,6 +39,7 @@ class GroupListScreen extends StatelessWidget {
           onTap: () {
             showModalBottomSheet(
               context: context,
+              useRootNavigator: true,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
               builder: (context) => GroupFormScreen(

@@ -27,6 +27,7 @@ Widget buildDynamicFAB(BuildContext context, int index) {
     onPressed: () {
       showModalBottomSheet(
         context: context,
+        useRootNavigator: true,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (context) => formScreen,
