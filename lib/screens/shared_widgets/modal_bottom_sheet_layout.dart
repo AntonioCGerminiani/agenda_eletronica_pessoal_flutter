@@ -14,7 +14,7 @@ class ModalBottomSheetLayout extends StatelessWidget {
       padding: EdgeInsets.only(bottom: keyboardSpace),
       child: Container(
         constraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * 0.90,
+          maxHeight: MediaQuery.of(context).size.height * 0.95,
           maxWidth: MediaQuery.of(context).size.width * 0.95,
         ),
         decoration: BoxDecoration(
