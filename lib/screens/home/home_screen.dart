@@ -11,18 +11,15 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
-        title: const Text(
-          'Agenda Eletrônica',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
+        toolbarHeight: 0,
       ),
-      body: navigationShell,
 
-      floatingActionButton: buildDynamicFAB(context, navigationShell.currentIndex),
+      body: SafeArea(child: navigationShell),
+
+      floatingActionButton: buildDynamicFAB(
+        context,
+        navigationShell.currentIndex,
+      ),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
