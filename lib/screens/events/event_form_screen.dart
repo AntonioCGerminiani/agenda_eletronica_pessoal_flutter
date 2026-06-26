@@ -1,8 +1,8 @@
-import 'package:agenda_eletronica_pessoal/controllers/contact_controller.dart';
 import 'package:agenda_eletronica_pessoal/controllers/event_controller.dart';
 import 'package:agenda_eletronica_pessoal/models/event.dart';
+import 'package:agenda_eletronica_pessoal/screens/events/components/participants_selector.dart';
 import 'package:agenda_eletronica_pessoal/screens/shared_widgets/custom_text_field.dart';
-import 'package:agenda_eletronica_pessoal/screens/shared_widgets/reminder_selector.dart';
+import 'package:agenda_eletronica_pessoal/screens/events/components/reminder_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +10,6 @@ import 'package:agenda_eletronica_pessoal/screens/shared_widgets/modal_bottom_sh
 import 'package:agenda_eletronica_pessoal/screens/shared_widgets/bottom_sheet_header.dart';
 import 'package:agenda_eletronica_pessoal/screens/shared_widgets/form_action_buttons.dart';
 import 'package:agenda_eletronica_pessoal/screens/shared_widgets/record_metadata_text.dart';
-import 'package:agenda_eletronica_pessoal/screens/shared_widgets/contact_selection_list.dart';
 
 class EventFormScreen extends StatefulWidget {
   final Event? event;
@@ -36,9 +35,6 @@ class _EventFormScreenState extends State<EventFormScreen> {
   // Lista local para gerenciar os lembretes do evento
   late List<int> _selectedReminderMinutes;
   late bool _isReadOnly;
-
-  // Termo de busca local para filtrar contatos na listagem interna
-  String _contactSearchQuery = '';
 
   bool get _isEditing => widget.event != null;
 
@@ -197,25 +193,10 @@ class _EventFormScreenState extends State<EventFormScreen> {
     }
   }
 
-  List<Map<String, dynamic>> _getFilteredContacts(
-    List<Map<String, dynamic>> allContacts,
-  ) {
-    return allContacts.where((contact) {
-      final contactKey = contact['key'] as int;
 
-      if (_isReadOnly && !_selectedContactKeys.contains(contactKey)) {
-        return false;
-      }
-
-      final fullName = '${contact['name'] ?? ''} ${contact['surname'] ?? ''}'
-          .toLowerCase();
-      return fullName.contains(_contactSearchQuery.toLowerCase());
-    }).toList();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     // Definição dinâmica do título e ícone
     String titleText;
@@ -231,10 +212,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
       headerIcon = Icons.event_available_outlined;
     }
 
-    // Acessa todos os contatos cadastrados no app via ContactController
-    final contactController = Provider.of<ContactController>(context);
-    final allContacts = contactController.fetchContacts();
-    final filteredContacts = _getFilteredContacts(allContacts);
+
 
     return ModalBottomSheetLayout(
       child: Column(
@@ -317,38 +295,12 @@ class _EventFormScreenState extends State<EventFormScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      'Selecionar Participantes (${_selectedContactKeys.length})',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.primaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    if (!_isReadOnly) ...[
-                      CustomTextField(
-                        labelText: 'Buscar contatos para adicionar...',
-                        prefixIcon: Icons.search,
-                        onChanged: (val) {
-                          setState(() {
-                            _contactSearchQuery = val;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                    ContactSelectionList(
-                      filteredContacts: filteredContacts,
+                    ParticipantsSelector(
                       selectedContactKeys: _selectedContactKeys,
                       isReadOnly: _isReadOnly,
-                      emptyMessage: 'Nenhum contato adicionado ao evento',
-                      onSelectionChanged: (contactKey, isSelected) {
+                      onChanged: (newContactKeys) {
                         setState(() {
-                          if (isSelected) {
-                            _selectedContactKeys.add(contactKey);
-                          } else {
-                            _selectedContactKeys.remove(contactKey);
-                          }
+                          _selectedContactKeys = newContactKeys;
                         });
                       },
                     ),

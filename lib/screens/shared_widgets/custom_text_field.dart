@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String labelText;
+  final bool? filled;
+  final Color? fillColor;
   final IconData prefixIcon;
   final String? Function(String?)? validator;
   final TextInputType keyboardType;
@@ -17,6 +19,8 @@ class CustomTextField extends StatelessWidget {
     super.key,
     this.controller,
     required this.labelText,
+    this.filled = false,
+    this.fillColor = Colors.transparent,
     required this.prefixIcon,
     this.validator,
     this.keyboardType = TextInputType.text,
@@ -41,6 +45,8 @@ class CustomTextField extends StatelessWidget {
         labelText: labelText,
         prefixIcon: Icon(prefixIcon),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        filled: filled,
+        fillColor: fillColor,
       ),
       validator: validator,
     );

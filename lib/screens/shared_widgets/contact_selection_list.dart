@@ -21,8 +21,8 @@ class ContactSelectionList extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SizedBox(
-      height: 220,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 250),
       child: Material(
         color: theme.colorScheme.surfaceContainerLowest,
         clipBehavior: Clip.antiAlias,
@@ -32,6 +32,7 @@ class ContactSelectionList extends StatelessWidget {
         ),
         child: filteredContacts.isEmpty
             ? Center(
+                heightFactor: 1.0,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
@@ -42,6 +43,7 @@ class ContactSelectionList extends StatelessWidget {
                 ),
               )
             : ListView.builder(
+                shrinkWrap: true,
                 itemCount: filteredContacts.length,
                 itemBuilder: (context, index) {
                   final contact = filteredContacts[index];

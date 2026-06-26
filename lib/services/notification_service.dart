@@ -24,10 +24,10 @@ class NotificationService {
     // 3. Configurações para iOS
     const DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
-          requestAlertPermission: false,
-          requestBadgePermission: false,
-          requestSoundPermission: false,
-        );
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
 
     // 4. Configurações globais de inicialização
     const LinuxInitializationSettings initializationSettingsLinux =
@@ -35,10 +35,10 @@ class NotificationService {
 
     const InitializationSettings initializationSettings =
         InitializationSettings(
-          android: initializationSettingsAndroid,
-          linux: initializationSettingsLinux,
-          iOS: initializationSettingsDarwin,
-        );
+      android: initializationSettingsAndroid,
+      linux: initializationSettingsLinux,
+      iOS: initializationSettingsDarwin,
+    );
 
     await _notificationsPlugin.initialize(
       settings: initializationSettings,
@@ -59,8 +59,7 @@ class NotificationService {
     // 6. Solicitar permissões no iOS
     final iosImplementation = _notificationsPlugin
         .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >();
+            IOSFlutterLocalNotificationsPlugin>();
     await iosImplementation?.requestPermissions(
       alert: true,
       badge: true,
@@ -148,8 +147,8 @@ class NotificationService {
       final notificationId = (eventKey * 10) + i;
 
       String bodyMessage = minutesBefore == 0
-          ? "'${event.name}' está começando agora!"
-          : "'${event.name}' começa em $minutesBefore minutos.";
+          ? "Seu evento '${event.name}' está começando agora!"
+          : "Seu evento '${event.name}' começa em $minutesBefore minutos.";
 
       await scheduleNotification(
         id: notificationId,
