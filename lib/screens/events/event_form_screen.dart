@@ -294,7 +294,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
                         });
                       },
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     ParticipantsSelector(
                       selectedContactKeys: _selectedContactKeys,
                       isReadOnly: _isReadOnly,
