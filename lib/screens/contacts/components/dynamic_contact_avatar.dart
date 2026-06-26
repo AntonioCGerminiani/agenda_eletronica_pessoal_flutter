@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class DynamicContactAvatar extends StatelessWidget {
   final String name;
   final String surname;
+  final double? fontSize;
 
   const DynamicContactAvatar({
     super.key,
     required this.name,
     required this.surname,
+    this.fontSize = 20,
   });
 
   // Extração das iniciais
@@ -66,7 +68,8 @@ class DynamicContactAvatar extends StatelessWidget {
       backgroundColor: backgroundColor,
       child: Text(
         initials,
-        style: const TextStyle(
+        style: TextStyle(
+          fontSize: fontSize,
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),

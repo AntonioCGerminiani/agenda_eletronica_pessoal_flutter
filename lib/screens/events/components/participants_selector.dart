@@ -86,9 +86,13 @@ class ParticipantsSelector extends StatelessWidget {
 
               return Chip(
                 avatar: SizedBox(
-                  width: 34,
-                  height: 34,
-                  child: DynamicContactAvatar(name: name, surname: surname),
+                  width: 24,
+                  height: 24,
+                  child: DynamicContactAvatar(
+                    name: name,
+                    surname: surname,
+                    fontSize: 10,
+                  ),
                 ),
                 label: Text(fullName),
                 onDeleted: isReadOnly
